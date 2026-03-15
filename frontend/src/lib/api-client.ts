@@ -3,6 +3,7 @@ import { initTsrReactQuery } from "@ts-rest/react-query/v5";
 import { contract } from "@parallel/contract";
 import { supabase } from "@/lib/supabase";
 
+// @ts-ignore
 const API_URL = import.meta.env.VITE_API_URL as string;
 
 async function customFetch({

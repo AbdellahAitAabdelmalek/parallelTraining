@@ -22,7 +22,7 @@ export const cim10Contract = c.router({
   ingest: {
     method: "POST",
     path: "/codage-cim10/ingest",
-    body: z.object({}),
+    body: z.undefined(),
     responses: {
       201: z.unknown(),
     },
