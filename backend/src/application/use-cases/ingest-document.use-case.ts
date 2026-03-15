@@ -1,12 +1,12 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import * as path from 'path';
-import * as fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
-import { CHUNK_REPOSITORY } from '../../domain/ports/chunk.repository.port';
-import { ChunkRepositoryPort } from '../../domain/ports/chunk.repository.port';
-import { EMBEDDING_SERVICE } from '../../domain/ports/embedding.service.port';
-import { EmbeddingServicePort } from '../../domain/ports/embedding.service.port';
-import { Chunk } from '../../domain/entities/chunk.entity';
+import { Inject, Injectable, Logger } from "@nestjs/common";
+import * as path from "path";
+import * as fs from "fs";
+import { v4 as uuidv4 } from "uuid";
+import { CHUNK_REPOSITORY } from "../../domain/ports/chunk.repository.port";
+import { ChunkRepositoryPort } from "../../domain/ports/chunk.repository.port";
+import { EMBEDDING_SERVICE } from "../../domain/ports/embedding.service.port";
+import { EmbeddingServicePort } from "../../domain/ports/embedding.service.port";
+import { Chunk } from "../../domain/entities/chunk.entity";
 
 interface ParsedChunk {
   code: string;
@@ -25,28 +25,28 @@ export class IngestDocumentUseCase {
     private readonly embeddingService: EmbeddingServicePort,
   ) {}
 
-  private readonly FULL_INGEST_THRESHOLD = 1000;
+  private readonly FULL_INGEST_THRESHOLD = 1000; // safety check to avoid duplicate ingestion during development
   private readonly EMBED_DELAY_MS = 700; // stay under 100 RPM
 
   async execute(): Promise<{ message: string; count?: number }> {
     const existing = await this.chunkRepository.count();
     if (existing >= this.FULL_INGEST_THRESHOLD) {
       this.logger.log(`Skipping ingestion — ${existing} chunks already in DB`);
-      return { message: 'Already ingested', count: existing };
+      return { message: "Already ingested", count: existing };
     }
     if (existing > 0) {
-      this.logger.log(`Partial ingestion detected (${existing} chunks) — clearing and restarting`);
+      this.logger.log(
+        `Partial ingestion detected (${existing} chunks) — clearing and restarting`,
+      );
       await this.chunkRepository.truncate();
     }
 
-    const pdfPath = path.resolve(
-      __dirname,
-      '../../../../assets/CoCoA.pdf',
-    );
+    const pdfPath = path.resolve(__dirname, "../../../../assets/CoCoA.pdf");
+
     this.logger.log(`Parsing PDF: ${pdfPath}`);
 
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { PDFParse } = require('pdf-parse');
+    const { PDFParse } = require("pdf-parse");
     const buffer = fs.readFileSync(pdfPath);
     const parser = new PDFParse({ data: buffer });
     const data = await parser.getText();
@@ -74,7 +74,7 @@ export class IngestDocumentUseCase {
     }
 
     this.logger.log(`Ingestion complete: ${saved} chunks saved`);
-    return { message: 'Ingestion complete', count: saved };
+    return { message: "Ingestion complete", count: saved };
   }
 
   private splitIntoChunks(text: string): ParsedChunk[] {
@@ -83,11 +83,11 @@ export class IngestDocumentUseCase {
     // Split on lines that start with a CIM-10 code
     const blockPattern = /(?=^[A-Z]\d{2}(?:\.\d+)?\s)/m;
 
-    const blocks = text.split(new RegExp(blockPattern, 'gm')).filter(Boolean);
+    const blocks = text.split(new RegExp(blockPattern, "gm")).filter(Boolean);
 
     const parsed: ParsedChunk[] = [];
     for (const block of blocks) {
-      const firstLine = block.split('\n')[0];
+      const firstLine = block.split("\n")[0];
       const match = firstLine.match(codePattern);
       if (!match) continue;
 

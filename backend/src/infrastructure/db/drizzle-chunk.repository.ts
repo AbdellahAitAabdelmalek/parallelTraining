@@ -1,9 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { sql } from 'drizzle-orm';
-import { ChunkRepositoryPort } from '../../domain/ports/chunk.repository.port';
-import { Chunk } from '../../domain/entities/chunk.entity';
-import { DRIZZLE_DB, DrizzleDb } from './drizzle.provider';
-import { chunks, ChunkRow } from './schema';
+import { Inject, Injectable } from "@nestjs/common";
+import { sql } from "drizzle-orm";
+import { ChunkRepositoryPort } from "../../domain/ports/chunk.repository.port";
+import { Chunk } from "../../domain/entities/chunk.entity";
+import { DRIZZLE_DB, DrizzleDb } from "./drizzle.provider";
+import { chunks, ChunkRow } from "./schema";
 
 @Injectable()
 export class DrizzleChunkRepository implements ChunkRepositoryPort {
@@ -30,7 +30,7 @@ export class DrizzleChunkRepository implements ChunkRepositoryPort {
   }
 
   async findSimilar(embedding: number[], limit: number): Promise<Chunk[]> {
-    const vectorStr = `[${embedding.join(',')}]`;
+    const vectorStr = `[${embedding.join(",")}]`;
     const rows = await this.db.execute<ChunkRow>(
       sql`SELECT id, content, metadata, embedding::text, created_at
           FROM chunks
@@ -46,7 +46,7 @@ export class DrizzleChunkRepository implements ChunkRepositoryPort {
           row.embedding
             ? (row.embedding as unknown as string)
                 .slice(1, -1)
-                .split(',')
+                .split(",")
                 .map(Number)
             : null,
           row.createdAt,

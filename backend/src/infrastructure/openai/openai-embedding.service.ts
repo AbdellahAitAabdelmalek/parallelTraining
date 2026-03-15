@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import OpenAI from 'openai';
-import { EmbeddingServicePort } from '../../domain/ports/embedding.service.port';
+import { Injectable } from "@nestjs/common";
+import OpenAI from "openai";
+import { EmbeddingServicePort } from "../../domain/ports/embedding.service.port";
 
 @Injectable()
 export class OpenAIEmbeddingService implements EmbeddingServicePort {
@@ -15,9 +15,10 @@ export class OpenAIEmbeddingService implements EmbeddingServicePort {
   private readonly MAX_CHARS = 16_000;
 
   async embed(text: string): Promise<number[]> {
-    const input = text.length > this.MAX_CHARS ? text.slice(0, this.MAX_CHARS) : text;
+    const input =
+      text.length > this.MAX_CHARS ? text.slice(0, this.MAX_CHARS) : text;
     const response = await this.client.embeddings.create({
-      model: 'text-embedding-3-small',
+      model: "text-embedding-3-small",
       input,
     });
     return response.data[0].embedding;

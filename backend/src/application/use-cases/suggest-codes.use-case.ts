@@ -1,7 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
-import OpenAI from 'openai';
-import { CHUNK_REPOSITORY, ChunkRepositoryPort } from '../../domain/ports/chunk.repository.port';
-import { EMBEDDING_SERVICE, EmbeddingServicePort } from '../../domain/ports/embedding.service.port';
+import { Inject, Injectable } from "@nestjs/common";
+import OpenAI from "openai";
+import {
+  CHUNK_REPOSITORY,
+  ChunkRepositoryPort,
+} from "../../domain/ports/chunk.repository.port";
+import {
+  EMBEDDING_SERVICE,
+  EmbeddingServicePort,
+} from "../../domain/ports/embedding.service.port";
 
 export interface CodeSuggestion {
   code: string;
@@ -25,11 +31,12 @@ export class SuggestCodesUseCase {
 
   async execute(input: string): Promise<{ suggestions: CodeSuggestion[] }> {
     const queryEmbedding = await this.embeddingService.embed(input);
-    const similarChunks = await this.chunkRepository.findSimilar(queryEmbedding, 5);
+    const similarChunks = await this.chunkRepository.findSimilar(
+      queryEmbedding,
+      5,
+    );
 
-    const context = similarChunks
-      .map((c) => c.content)
-      .join('\n\n---\n\n');
+    const context = similarChunks.map((c) => c.content).join("\n\n---\n\n");
 
     const prompt = `Tu es un expert en codage médical CIM-10.
 Voici des extraits du document CoCoA (guide de codage officiel) :
@@ -58,9 +65,9 @@ Réponds en JSON avec ce format :
 }`;
 
     const completion = await this.openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [{ role: 'user', content: prompt }],
-      response_format: { type: 'json_object' },
+      model: "gpt-4o",
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" },
     });
 
     const raw = completion.choices[0].message.content ?? '{"suggestions":[]}';

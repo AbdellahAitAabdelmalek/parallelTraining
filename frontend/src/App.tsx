@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 interface Suggestion {
   code: string;
@@ -8,7 +8,7 @@ interface Suggestion {
 }
 
 export default function App() {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,16 +17,16 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('http://localhost:3000/rag/suggest', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("http://localhost:3000/rag/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input }),
       });
       if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
       const data = await res.json();
       setSuggestions(data.suggestions ?? []);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur inconnue');
+      setError(e instanceof Error ? e.message : "Erreur inconnue");
     } finally {
       setLoading(false);
     }
@@ -52,13 +52,11 @@ export default function App() {
             disabled={loading || !input.trim()}
             className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-medium py-2 px-4 rounded-lg transition-colors"
           >
-            {loading ? 'Recherche…' : 'Suggérer des codes'}
+            {loading ? "Recherche…" : "Suggérer des codes"}
           </button>
         </div>
 
-        {error && (
-          <p className="text-sm text-red-500 text-center">{error}</p>
-        )}
+        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
 
         {suggestions.length > 0 && (
           <ul className="space-y-4">
@@ -76,7 +74,9 @@ export default function App() {
                 <p className="text-sm text-gray-600">{s.justification}</p>
                 {s.regles_codage && (
                   <p className="text-xs text-gray-500 bg-gray-50 rounded p-2 border-l-2 border-blue-300">
-                    <span className="font-medium text-gray-700">Règles CoCoA : </span>
+                    <span className="font-medium text-gray-700">
+                      Règles CoCoA :{" "}
+                    </span>
                     {s.regles_codage}
                   </p>
                 )}

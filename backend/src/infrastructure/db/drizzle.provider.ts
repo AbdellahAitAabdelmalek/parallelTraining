@@ -1,9 +1,9 @@
-import { Provider } from '@nestjs/common';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
-import * as schema from './schema';
+import { Provider } from "@nestjs/common";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import * as schema from "./schema";
 
-export const DRIZZLE_DB = Symbol('DRIZZLE_DB');
+export const DRIZZLE_DB = Symbol("DRIZZLE_DB");
 
 export type DrizzleDb = ReturnType<typeof drizzle<typeof schema>>;
 
