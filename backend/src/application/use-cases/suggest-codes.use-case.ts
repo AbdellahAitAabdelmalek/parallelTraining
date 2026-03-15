@@ -1,4 +1,4 @@
-import { Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Inject, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import {
   CHUNK_REPOSITORY,
   ChunkRepositoryPort,
@@ -21,6 +21,8 @@ export interface CodeSuggestion {
 
 @Injectable()
 export class SuggestCodesUseCase {
+  private readonly logger = new Logger(SuggestCodesUseCase.name);
+
   constructor(
     @Inject(CHUNK_REPOSITORY)
     private readonly chunkRepository: ChunkRepositoryPort,
@@ -31,11 +33,10 @@ export class SuggestCodesUseCase {
   ) {}
 
   async execute(input: string): Promise<{ suggestions: CodeSuggestion[] }> {
+    this.logger.log(`Suggesting codes for: "${input}"`);
+
     const queryEmbedding = await this.embeddingService.embed(input);
-    const similarChunks = await this.chunkRepository.findSimilar(
-      queryEmbedding,
-      5,
-    );
+    const similarChunks = await this.chunkRepository.findSimilar(queryEmbedding, 5);
 
     const context = similarChunks.map((c) => c.content).join("\n\n---\n\n");
     const prompt = this.buildPrompt(input, context);
@@ -49,7 +50,9 @@ export class SuggestCodesUseCase {
 
     try {
       const parsed = JSON.parse(responseRaw) as { suggestions: CodeSuggestion[] };
-      return { suggestions: parsed.suggestions ?? [] };
+      const suggestions = parsed.suggestions ?? [];
+      this.logger.log(`Returning ${suggestions.length} suggestions`);
+      return { suggestions };
     } catch {
       throw new InternalServerErrorException("Invalid response format from AI model");
     }
