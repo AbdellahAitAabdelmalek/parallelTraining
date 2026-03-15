@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import * as path from "path";
-import * as fs from "fs";
+import * as fs from "fs/promises";
 import { v4 as uuidv4 } from "uuid";
 import { CHUNK_REPOSITORY } from "../../domain/ports/chunk.repository.port";
 import { ChunkRepositoryPort } from "../../domain/ports/chunk.repository.port";
@@ -56,7 +56,7 @@ export class IngestDocumentUseCase {
 
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { PDFParse } = require("pdf-parse");
-    const buffer = fs.readFileSync(this.PDF_PATH);
+    const buffer = await fs.readFile(this.PDF_PATH);
     const parser = new PDFParse({ data: buffer });
     const data = await parser.getText();
     const text: string = data.text;
