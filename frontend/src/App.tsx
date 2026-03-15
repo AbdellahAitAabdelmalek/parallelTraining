@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useAuth } from "./contexts/AuthContext";
+import { apiFetch } from "./lib/api";
 
 interface Suggestion {
   code: string;
@@ -8,6 +10,7 @@ interface Suggestion {
 }
 
 export default function App() {
+  const { signOut } = useAuth();
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
@@ -17,9 +20,8 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("http://localhost:3000/codage-cim10/suggest", {
+      const res = await apiFetch("/codage-cim10/suggest", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input }),
       });
       if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
@@ -35,9 +37,17 @@ export default function App() {
   return (
     <div className='min-h-screen bg-gray-50 flex items-center justify-center p-6'>
       <div className='bg-white rounded-2xl shadow-md w-full max-w-2xl p-8 space-y-6'>
-        <h1 className='text-2xl font-bold text-gray-800'>
-          Suggestion de codes CIM-10
-        </h1>
+        <div className='flex items-center justify-between'>
+          <h1 className='text-2xl font-bold text-gray-800'>
+            Suggestion de codes CIM-10
+          </h1>
+          <button
+            onClick={signOut}
+            className='text-sm text-gray-500 hover:text-gray-700 underline'
+          >
+            Déconnexion
+          </button>
+        </div>
 
         <div className='space-y-3'>
           <textarea
