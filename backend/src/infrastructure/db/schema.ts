@@ -1,6 +1,5 @@
 import { pgTable, uuid, text, jsonb, timestamp, customType } from 'drizzle-orm/pg-core';
 
-// pgvector n'a pas de type natif dans drizzle-orm — on le définit manuellement
 const vector = (name: string, dimensions: number) =>
   customType<{ data: number[]; driverData: string }>({
     dataType() {
@@ -10,11 +9,7 @@ const vector = (name: string, dimensions: number) =>
       return `[${value.join(',')}]`;
     },
     fromDriver(value: string): number[] {
-      return value
-        .replace('[', '')
-        .replace(']', '')
-        .split(',')
-        .map(Number);
+      return value.slice(1, -1).split(',').map(Number);
     },
   })(name);
 
