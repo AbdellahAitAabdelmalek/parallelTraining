@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiFetch } from "@/lib/api";
+import { useProfile } from "@/hooks/useProfile";
 
 interface Suggestion {
   code: string;
@@ -11,6 +12,7 @@ interface Suggestion {
 
 export default function App() {
   const { signOut } = useAuth();
+  const { data: profile } = useProfile();
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
@@ -38,9 +40,14 @@ export default function App() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="bg-white rounded-2xl shadow-md w-full max-w-2xl p-8 space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Suggestion de codes CIM-10
-          </h1>
+          <div>
+            <p className="text-sm text-gray-500">
+              {profile ? `Bonjour, ${profile.firstName} !` : ""}
+            </p>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Suggestion de codes CIM-10
+            </h1>
+          </div>
           <button
             onClick={signOut}
             className="text-sm text-gray-500 hover:text-gray-700 underline"
