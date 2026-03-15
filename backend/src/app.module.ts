@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
-import { RagModule } from "./presentation/http/rag.module";
+import { CodageCim10Module } from "./presentation/http/codage-cim10/codage-cim10.module";
 
 @Module({
-  imports: [RagModule],
+  imports: [CodageCim10Module],
 })
 export class AppModule {}
