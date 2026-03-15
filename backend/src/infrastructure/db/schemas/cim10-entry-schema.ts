@@ -2,7 +2,7 @@ import { pgTable, uuid, text, jsonb, timestamp } from "drizzle-orm/pg-core";
 import { InferInsertModel, type InferSelectModel } from "drizzle-orm";
 import { vector } from "@/infrastructure/db/schemas/types/vector";
 
-export const cim10Entries = pgTable("chunks", {
+export const cim10Entries = pgTable("cim10_entries", {
   id: uuid("id").primaryKey().defaultRandom(),
   content: text("content").notNull(),
   metadata: jsonb("metadata").notNull().$type<Record<string, unknown>>(),
