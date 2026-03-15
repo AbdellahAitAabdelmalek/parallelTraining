@@ -12,11 +12,13 @@ export class OpenAIEmbeddingService implements EmbeddingServicePort {
   private readonly MAX_CHARS = 16_000;
 
   async embed(text: string): Promise<number[]> {
-    const input =
+    // Truncate input to stay within model limits, with some safety margin
+    const truncatedInput =
       text.length > this.MAX_CHARS ? text.slice(0, this.MAX_CHARS) : text;
+
     const response = await this.client.embeddings.create({
       model: "text-embedding-3-small",
-      input,
+      input: truncatedInput,
     });
     return response.data[0].embedding;
   }
