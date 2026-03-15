@@ -1,5 +1,4 @@
 import { Inject, Injectable } from "@nestjs/common";
-import OpenAI from "openai";
 import {
   CHUNK_REPOSITORY,
   ChunkRepositoryPort,
@@ -8,6 +7,10 @@ import {
   EMBEDDING_SERVICE,
   EmbeddingServicePort,
 } from "../../domain/ports/embedding.service.port";
+import {
+  CHAT_SERVICE,
+  ChatServicePort,
+} from "../../domain/ports/chat.service.port";
 
 export interface CodeSuggestion {
   code: string;
@@ -18,16 +21,14 @@ export interface CodeSuggestion {
 
 @Injectable()
 export class SuggestCodesUseCase {
-  private readonly openai: OpenAI;
-
   constructor(
     @Inject(CHUNK_REPOSITORY)
     private readonly chunkRepository: ChunkRepositoryPort,
     @Inject(EMBEDDING_SERVICE)
     private readonly embeddingService: EmbeddingServicePort,
-  ) {
-    this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  }
+    @Inject(CHAT_SERVICE)
+    private readonly chatService: ChatServicePort,
+  ) {}
 
   async execute(input: string): Promise<{ suggestions: CodeSuggestion[] }> {
     const queryEmbedding = await this.embeddingService.embed(input);
@@ -37,8 +38,15 @@ export class SuggestCodesUseCase {
     );
 
     const context = similarChunks.map((c) => c.content).join("\n\n---\n\n");
+    const prompt = this.buildPrompt(input, context);
+    const responseRaw = await this.chatService.complete(prompt);
 
-    const prompt = `Tu es un expert en codage médical CIM-10.
+    const parsed = JSON.parse(responseRaw) as { suggestions: CodeSuggestion[] };
+    return { suggestions: parsed.suggestions ?? [] };
+  }
+
+  private buildPrompt(input: string, context: string): string {
+    return `Tu es un expert en codage médical CIM-10.
 Voici des extraits du document CoCoA (guide de codage officiel) :
 
 ${context}
@@ -63,15 +71,5 @@ Réponds en JSON avec ce format :
     }
   ]
 }`;
-
-    const completion = await this.openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
-    });
-
-    const raw = completion.choices[0].message.content ?? '{"suggestions":[]}';
-    const parsed = JSON.parse(raw) as { suggestions: CodeSuggestion[] };
-    return { suggestions: parsed.suggestions ?? [] };
   }
 }
