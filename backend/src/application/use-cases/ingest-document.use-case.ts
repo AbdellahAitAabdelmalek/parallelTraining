@@ -67,13 +67,12 @@ export class IngestDocumentUseCase {
     let saved = 0;
     for (const parsed of chunks) {
       const embedding = await this.embeddingService.embed(parsed.content);
-      const chunk = new Chunk(
-        uuidv4(),
-        parsed.content,
-        { code: parsed.code, libelle: parsed.libelle },
+      const chunk = new Chunk({
+        id: uuidv4(),
+        content: parsed.content,
+        metadata: { code: parsed.code, libelle: parsed.libelle },
         embedding,
-        new Date(),
-      );
+      });
       await this.chunkRepository.save(chunk);
       saved++;
       await new Promise((r) => setTimeout(r, this.EMBED_DELAY_MS));

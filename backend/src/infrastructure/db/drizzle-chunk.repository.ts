@@ -39,18 +39,18 @@ export class DrizzleChunkRepository implements ChunkRepositoryPort {
     );
     return rows.rows.map(
       (row) =>
-        new Chunk(
-          row.id,
-          row.content,
-          row.metadata as Record<string, unknown>,
-          row.embedding
+        new Chunk({
+          id: row.id,
+          content: row.content,
+          metadata: row.metadata as Record<string, unknown>,
+          embedding: row.embedding
             ? (row.embedding as unknown as string)
                 .slice(1, -1)
                 .split(",")
                 .map(Number)
             : null,
-          row.createdAt,
-        ),
+          createdAt: row.createdAt,
+        }),
     );
   }
 }
