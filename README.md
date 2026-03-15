@@ -68,6 +68,10 @@ parallelTraining/
 └── .env.example
 ```
 
+## Tests
+
+Voir [backend/README.md](backend/README.md).
+
 ## Endpoints
 
 | Méthode | Route                   | Description                                         |

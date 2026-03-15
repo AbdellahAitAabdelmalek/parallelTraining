@@ -14,7 +14,7 @@ export const cim10Contract = c.router({
   suggest: {
     method: "POST",
     path: "/codage-cim10/suggest",
-    body: z.object({ input: z.string() }),
+    body: z.object({ input: z.string().min(1) }),
     responses: {
       201: z.object({ suggestions: z.array(CodeSuggestionSchema) }),
     },
