@@ -20,7 +20,7 @@ const vector = (name: string, dimensions: number) =>
     },
   })(name);
 
-export const chunks = pgTable("chunks", {
+export const cim10Entries = pgTable("cim10_entries", {
   id: uuid("id").primaryKey().defaultRandom(),
   content: text("content").notNull(),
   metadata: jsonb("metadata").notNull().$type<Record<string, unknown>>(),
@@ -28,5 +28,5 @@ export const chunks = pgTable("chunks", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export type ChunkRow = typeof chunks.$inferSelect;
-export type NewChunkRow = typeof chunks.$inferInsert;
+export type Cim10EntryRow = typeof cim10Entries.$inferSelect;
+export type NewCim10EntryRow = typeof cim10Entries.$inferInsert;

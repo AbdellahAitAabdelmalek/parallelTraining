@@ -23,7 +23,7 @@ Les **use cases** (application) orchestrent la logique via les ports.
 ```
 src/
 ├── domain/                         ← cœur métier, aucune dépendance externe
-│   ├── entities/                   ← objets métier (ex. Chunk)
+│   ├── entities/                   ← objets métier (ex. Cim10Entry)
 │   └── ports/                      ← interfaces de persistance et services
 │
 ├── application/                    ← cas d'usage, orchestre le domaine

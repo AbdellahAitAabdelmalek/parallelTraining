@@ -8,26 +8,27 @@ Le document de référence utilisé est le **CoCoA** (Compendium de Codage), un 
 
 ### Fonctionnement cible
 
-1. Le document CoCoA (PDF) est découpé en extraits (*chunks*) et indexé dans une base vectorielle.
-2. Chaque chunk est transformé en vecteur numérique via l'API OpenAI (modèle `text-embedding-3-small`).
+1. Le document CoCoA (PDF) est découpé en extraits (_cim10Entries_) et indexé dans une base vectorielle.
+2. Chaque Cim10Entry est transformé en vecteur numérique via l'API OpenAI (modèle `text-embedding-3-small`).
 3. Lorsqu'un utilisateur décrit un symptôme ou un diagnostic, sa description est également vectorisée.
-4. Les chunks les plus proches sémantiquement sont récupérés via une recherche de similarité cosinus (pgvector).
-5. Les codes CIM-10 associés à ces chunks sont retournés comme suggestions.
+4. Les cim10Entries les plus proches sémantiquement sont récupérés via une recherche de similarité cosinus (pgvector).
+5. Les codes CIM-10 associés à ces cim10Entries sont retournés comme suggestions.
 
 ## Stack technique
 
-| Couche | Technologie |
-|---|---|
-| Backend | NestJS (TypeScript) — architecture hexagonale |
-| Frontend | React + Tailwind CSS (Vite) |
-| Base de données | PostgreSQL + extension pgvector |
-| ORM | Drizzle ORM + drizzle-kit |
-| Embeddings | OpenAI API (`text-embedding-3-small`, 1536 dimensions) |
-| Infrastructure | Docker Compose |
+| Couche          | Technologie                                            |
+| --------------- | ------------------------------------------------------ |
+| Backend         | NestJS (TypeScript) — architecture hexagonale          |
+| Frontend        | React + Tailwind CSS (Vite)                            |
+| Base de données | PostgreSQL + extension pgvector                        |
+| ORM             | Drizzle ORM + drizzle-kit                              |
+| Embeddings      | OpenAI API (`text-embedding-3-small`, 1536 dimensions) |
+| Infrastructure  | Docker Compose                                         |
 
 ## Démarrage rapide
 
 ### Prérequis
+
 - Docker + Docker Compose
 - Node.js 20+
 - Une clé API OpenAI
@@ -69,7 +70,7 @@ parallelTraining/
 
 ## Endpoints
 
-| Méthode | Route | Description |
-|---|---|---|
-| POST | `/rag/ingest` | Indexe le document CoCoA |
-| POST | `/rag/suggest` | Retourne des suggestions CIM-10 pour un texte donné |
+| Méthode | Route          | Description                                         |
+| ------- | -------------- | --------------------------------------------------- |
+| POST    | `/rag/ingest`  | Indexe le document CoCoA                            |
+| POST    | `/rag/suggest` | Retourne des suggestions CIM-10 pour un texte donné |

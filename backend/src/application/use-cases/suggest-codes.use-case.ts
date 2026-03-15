@@ -5,17 +5,17 @@ import {
   Logger,
 } from "@nestjs/common";
 import {
-  CHUNK_REPOSITORY,
-  ChunkRepositoryPort,
-} from "../../domain/ports/chunk.repository.port";
+  CIM10_ENTRY_REPOSITORY,
+  Cim10EntryRepositoryPort,
+} from "../../domain/cim10/ports/cim10-entry.repository.port";
 import {
   EMBEDDING_SERVICE,
   EmbeddingServicePort,
-} from "../../domain/ports/embedding.service.port";
+} from "../../domain/cim10/ports/embedding.service.port";
 import {
   CHAT_SERVICE,
   ChatServicePort,
-} from "../../domain/ports/chat.service.port";
+} from "../../domain/cim10/ports/chat.service.port";
 
 export interface CodeSuggestion {
   code: string;
@@ -29,8 +29,8 @@ export class SuggestCodesUseCase {
   private readonly logger = new Logger(SuggestCodesUseCase.name);
 
   constructor(
-    @Inject(CHUNK_REPOSITORY)
-    private readonly chunkRepository: ChunkRepositoryPort,
+    @Inject(CIM10_ENTRY_REPOSITORY)
+    private readonly cim10EntryRepository: Cim10EntryRepositoryPort,
     @Inject(EMBEDDING_SERVICE)
     private readonly embeddingService: EmbeddingServicePort,
     @Inject(CHAT_SERVICE)
@@ -41,12 +41,12 @@ export class SuggestCodesUseCase {
     this.logger.log(`Suggesting codes for: "${input}"`);
 
     const queryEmbedding = await this.embeddingService.embed(input);
-    const similarChunks = await this.chunkRepository.findSimilar(
+    const similarCim10Entries = await this.cim10EntryRepository.findSimilar(
       queryEmbedding,
       5,
     );
 
-    const context = similarChunks.map((c) => c.content).join("\n\n---\n\n");
+    const context = similarCim10Entries.map((cim10Entry) => cim10Entry.content).join("\n\n---\n\n");
     const prompt = this.buildPrompt(input, context);
 
     let responseRaw: string;

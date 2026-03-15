@@ -2,13 +2,11 @@ import { Inject, Injectable, Logger } from "@nestjs/common";
 import * as path from "path";
 import * as fs from "fs/promises";
 import { v4 as uuidv4 } from "uuid";
-import { CHUNK_REPOSITORY } from "../../domain/ports/chunk.repository.port";
-import { ChunkRepositoryPort } from "../../domain/ports/chunk.repository.port";
-import { EMBEDDING_SERVICE } from "../../domain/ports/embedding.service.port";
-import { EmbeddingServicePort } from "../../domain/ports/embedding.service.port";
-import { Chunk } from "../../domain/entities/chunk.entity";
+import { CIM10_ENTRY_REPOSITORY, Cim10EntryRepositoryPort } from "../../domain/cim10/ports/cim10-entry.repository.port";
+import { EMBEDDING_SERVICE, EmbeddingServicePort } from "../../domain/cim10/ports/embedding.service.port";
+import { Cim10Entry } from "../../domain/cim10/entities/cim10-entry.entity";
 
-interface ParsedChunk {
+interface ParsedCim10Entry {
   code: string;
   libelle: string;
   content: string;
@@ -33,23 +31,23 @@ export class IngestDocumentUseCase {
   private readonly CIM10_BLOCK_PATTERN = /(?=^[A-Z]\d{2}(?:\.\d+)?\s)/gm;
 
   constructor(
-    @Inject(CHUNK_REPOSITORY)
-    private readonly chunkRepository: ChunkRepositoryPort,
+    @Inject(CIM10_ENTRY_REPOSITORY)
+    private readonly cim10EntryRepository: Cim10EntryRepositoryPort,
     @Inject(EMBEDDING_SERVICE)
     private readonly embeddingService: EmbeddingServicePort,
   ) {}
 
   async execute(): Promise<{ message: string; count?: number }> {
-    const existing = await this.chunkRepository.count();
+    const existing = await this.cim10EntryRepository.count();
     if (existing >= this.FULL_INGEST_THRESHOLD) {
-      this.logger.log(`Skipping ingestion — ${existing} chunks already in DB`);
+      this.logger.log(`Skipping ingestion — ${existing} CIM-10 entries already in DB`);
       return { message: "Already ingested", count: existing };
     }
     if (existing > 0) {
       this.logger.log(
-        `Partial ingestion detected (${existing} chunks) — clearing and restarting`,
+        `Partial ingestion detected (${existing} CIM-10 entries) — clearing and restarting`,
       );
-      await this.chunkRepository.truncate();
+      await this.cim10EntryRepository.truncate();
     }
 
     this.logger.log(`Parsing PDF: ${this.PDF_PATH}`);
@@ -60,38 +58,38 @@ export class IngestDocumentUseCase {
     const data = await parser.getText();
     const text: string = data.text;
 
-    const chunks = this.splitIntoChunks(text);
-    this.logger.log(`Found ${chunks.length} CIM-10 chunks`);
+    const cim10Entries = this.splitIntoCim10Entries(text);
+    this.logger.log(`Found ${cim10Entries.length} CIM-10 entries`);
 
     let saved = 0;
-    for (const parsed of chunks) {
-      const embedding = await this.embeddingService.embed(parsed.content);
+    for (const parsedCim10Entry of cim10Entries) {
+      const embedding = await this.embeddingService.embed(parsedCim10Entry.content);
 
-      const chunk = new Chunk({
+      const cim10Entry = new Cim10Entry({
         id: uuidv4(),
-        content: parsed.content,
-        metadata: { code: parsed.code, libelle: parsed.libelle },
+        content: parsedCim10Entry.content,
+        metadata: { code: parsedCim10Entry.code, libelle: parsedCim10Entry.libelle },
         embedding,
       });
 
-      await this.chunkRepository.save(chunk);
+      await this.cim10EntryRepository.save(cim10Entry);
       saved++;
       // Delay to respect embedding service rate limits
       await new Promise((r) => setTimeout(r, this.EMBED_DELAY_MS));
 
       if (saved % this.LOG_INTERVAL === 0) {
-        this.logger.log(`Saved ${saved}/${chunks.length} chunks`);
+        this.logger.log(`Saved ${saved}/${cim10Entries.length} CIM-10 entries`);
       }
     }
 
-    this.logger.log(`Ingestion complete: ${saved} chunks saved`);
+    this.logger.log(`Ingestion complete: ${saved} CIM-10 entries saved`);
     return { message: "Ingestion complete", count: saved };
   }
 
-  private splitIntoChunks(text: string): ParsedChunk[] {
+  private splitIntoCim10Entries(text: string): ParsedCim10Entry[] {
     const blocks = text.split(this.CIM10_BLOCK_PATTERN).filter(Boolean);
 
-    const parsed: ParsedChunk[] = [];
+    const parsedCim10Entries: ParsedCim10Entry[] = [];
     for (const block of blocks) {
       const firstLine = block.split("\n")[0];
       const match = firstLine.match(this.CIM10_CODE_PATTERN);
@@ -103,9 +101,9 @@ export class IngestDocumentUseCase {
 
       if (content.length < this.MIN_CHUNK_LENGTH) continue;
 
-      parsed.push({ code, libelle, content });
+      parsedCim10Entries.push({ code, libelle, content });
     }
 
-    return parsed;
+    return parsedCim10Entries;
   }
 }
