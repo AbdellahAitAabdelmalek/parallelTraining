@@ -1,10 +1,11 @@
 import { useState, FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
-import { apiClient } from "@/lib/api-client";
+import { tsr } from "@/lib/api-client";
 
 export default function SignupPage() {
   const navigate = useNavigate();
+  const { mutateAsync: createProfile } = tsr.users.createProfile.useMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -37,7 +38,7 @@ export default function SignupPage() {
       return;
     }
 
-    const res = await apiClient.users.createProfile({
+    const res = await createProfile({
       body: { firstName, lastName, dateOfBirth },
       extraHeaders: { Authorization: `Bearer ${token}` },
     });

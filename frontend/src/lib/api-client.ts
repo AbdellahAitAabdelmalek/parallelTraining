@@ -1,4 +1,3 @@
-import { initClient } from "@ts-rest/core";
 import { initTsrReactQuery } from "@ts-rest/react-query/v5";
 import { contract } from "@parallel/contract";
 import { supabase } from "@/lib/supabase";
@@ -45,9 +44,3 @@ export const tsr = initTsrReactQuery(contract, {
   api: customFetch,
 });
 
-// Client impératif (appels manuels avec token explicite : suggest, signup)
-export const apiClient = initClient(contract, {
-  baseUrl: API_URL,
-  baseHeaders: {},
-  api: customFetch,
-});

@@ -1,31 +1,19 @@
-import { useState } from "react";
-import { apiClient } from "@/lib/api-client";
-
-type Suggestion = {
-  code: string;
-  libelle: string;
-  justification: string;
-  regles_codage: string;
-};
+import { tsr } from "@/lib/api-client";
 
 export function useCim10Suggest() {
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { mutate, isPending, isError, data } = tsr.cim10.suggest.useMutation();
 
-  const suggest = async (input: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await apiClient.cim10.suggest({ body: { input } });
-      if (res.status !== 201) throw new Error(`Erreur serveur : ${res.status}`);
-      setSuggestions(res.body.suggestions);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Erreur inconnue");
-    } finally {
-      setLoading(false);
-    }
+  const suggestions = data?.status === 201 ? data.body.suggestions : [];
+  const error = isError
+    ? "Erreur inconnue"
+    : data && data.status !== 201
+      ? `Erreur serveur : ${data.status}`
+      : null;
+
+  return {
+    suggestions,
+    loading: isPending,
+    error,
+    suggest: (input: string) => mutate({ body: { input } }),
   };
-
-  return { suggestions, loading, error, suggest };
 }
