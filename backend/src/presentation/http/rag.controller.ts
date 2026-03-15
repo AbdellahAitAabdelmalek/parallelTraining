@@ -1,10 +1,7 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { IngestDocumentUseCase } from "../../application/use-cases/ingest-document.use-case";
 import { SuggestCodesUseCase } from "../../application/use-cases/suggest-codes.use-case";
-
-class SuggestDto {
-  input: string;
-}
+import { SuggestDto } from "./dtos/suggest.dto";
 
 @Controller("rag")
 export class RagController {
