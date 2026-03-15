@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "RAG backend for CIM-10 code suggestion",
   "scripts": {
-    "build": "nest build",
+    "build": "nest build && tsc-alias",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -30,6 +30,7 @@
     "pg": "^8.11.3",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "tsconfig-paths": "^4.2.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
@@ -38,6 +39,7 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/pg": "^8.11.5",
     "drizzle-kit": "^0.27.0",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.1.3"
   }
 }
