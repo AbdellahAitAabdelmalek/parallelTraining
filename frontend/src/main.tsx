@@ -5,8 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { apiClient } from "@/lib/api-client";
 import App from "@/App";
-import LoginPage from "@/pages/LoginPage";
-import SignupPage from "@/pages/SignupPage";
+import LoginPage from "@/feature/auth/ui_component/LoginPage";
+import SignupPage from "@/feature/auth/ui_component/SignupPage";
 import "@/index.css";
 
 const queryClient = new QueryClient();

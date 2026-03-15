@@ -1,31 +1,15 @@
 import { useState, FormEvent } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+import { Link } from "react-router-dom";
+import { useLogin } from "@/feature/auth/data_integration/useLogin";
 
 export default function LoginPage() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { login, loading, error } = useLogin();
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-      return;
-    }
-
-    navigate("/");
+    login(email, password);
   };
 
   return (
