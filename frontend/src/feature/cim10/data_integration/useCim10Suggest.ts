@@ -1,7 +1,8 @@
-import { tsr } from "@/lib/api-client";
+import { apiClient } from "@/lib/api-client";
 
 export function useCim10Suggest() {
-  const { mutate, isPending, isError, data } = tsr.cim10.suggest.useMutation();
+  const { mutate, isPending, isError, data } =
+    apiClient.cim10.suggest.useMutation();
 
   const suggestions = data?.status === 201 ? data.body.suggestions : [];
   const error = isError

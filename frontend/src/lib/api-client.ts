@@ -38,9 +38,8 @@ async function customFetch({
 }
 
 // Client React Query v5
-export const tsr = initTsrReactQuery(contract, {
+export const apiClient = initTsrReactQuery(contract, {
   baseUrl: API_URL,
   baseHeaders: {},
   api: customFetch,
 });
-

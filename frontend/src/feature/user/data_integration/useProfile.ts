@@ -1,5 +1,5 @@
-import { tsr } from "@/lib/api-client";
+import { apiClient } from "@/lib/api-client";
 
 export function useProfile() {
-  return tsr.users.getProfile.useQuery({ queryKey: ["profile"] });
+  return apiClient.users.getProfile.useQuery({ queryKey: ["profile"] });
 }
