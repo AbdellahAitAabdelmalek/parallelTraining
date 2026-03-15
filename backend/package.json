@@ -1,7 +1,7 @@
 {
-  "name": "rag-backend",
+  "name": "parallel-backend",
   "version": "0.0.1",
-  "description": "RAG backend for CIM-10 code suggestion",
+  "description": "Parallel backend for CIM-10 code suggestion",
   "scripts": {
     "build": "nest build && tsc-alias",
     "start": "nest start",
@@ -16,11 +16,11 @@
     "db:test:migrate": "DATABASE_URL=postgresql://parallel_user:parallel_password@localhost:5433/parallel_db_test drizzle-kit migrate"
   },
   "dependencies": {
-    "@nestjs/common": "^10.0.0",
-    "@nestjs/core": "^10.0.0",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
-    "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-express": "^11.0.0",
     "@types/pdf-parse": "^1.1.5",
     "@types/uuid": "^10.0.0",
     "class-transformer": "^0.5.1",
@@ -39,7 +39,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.0.0",
+    "@nestjs/cli": "^11.0.0",
     "@nestjs/testing": "^11.1.16",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.0.0",
