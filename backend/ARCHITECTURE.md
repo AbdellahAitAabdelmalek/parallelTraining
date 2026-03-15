@@ -5,7 +5,7 @@ Le backend suit une approche **hybride** entre l'architecture hexagonale (Ports 
 ## Principe
 
 ```
-  [ presentation/http ]        ← livraison HTTP (controllers, DTOs)
+  [ presentation/http ]        ← livraison HTTP (controllers, guards, contracts)
           ↓
   [ features/*/use-cases ]     ← logique métier, orchestration
           ↓
@@ -36,7 +36,7 @@ src/
 │   └── openai/                      ← appels à l'API OpenAI
 │
 ├── presentation/
-│   └── http/                        ← controllers, modules NestJS, DTOs
+│   └── http/                        ← controllers, modules NestJS, contrats HTTP (TsRest)
 │
 └── migrations/                      ← fichiers SQL générés par drizzle-kit
 ```

@@ -1,7 +1,7 @@
 import { useState, FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
-import { apiFetch } from "@/lib/api";
+import { apiClient } from "@/lib/api-client";
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -37,18 +37,14 @@ export default function SignupPage() {
       return;
     }
 
-    const res = await apiFetch(
-      "/users/profile",
-      {
-        method: "POST",
-        body: JSON.stringify({ firstName, lastName, dateOfBirth }),
-      },
-      token,
-    );
+    const res = await apiClient.users.createProfile({
+      body: { firstName, lastName, dateOfBirth },
+      extraHeaders: { Authorization: `Bearer ${token}` },
+    });
 
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.message ?? "Erreur lors de la création du profil");
+    if (res.status !== 201) {
+      const errBody = res.body as { message?: string } | null;
+      setError(errBody?.message ?? "Erreur lors de la création du profil");
       setLoading(false);
       return;
     }

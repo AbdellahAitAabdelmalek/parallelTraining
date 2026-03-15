@@ -21,6 +21,9 @@
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.0",
+    "@parallel/contract": "file:../contract",
+    "@ts-rest/core": "^3.52.1",
+    "@ts-rest/nest": "^3.52.1",
     "@types/pdf-parse": "^1.1.5",
     "@types/uuid": "^10.0.0",
     "class-transformer": "^0.5.1",
@@ -36,7 +39,8 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "tsconfig-paths": "^4.2.0",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",

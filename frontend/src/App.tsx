@@ -1,20 +1,15 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { apiFetch } from "@/lib/api";
+import { apiClient } from "@/lib/api-client";
 import { useProfile } from "@/hooks/useProfile";
-
-interface Suggestion {
-  code: string;
-  libelle: string;
-  justification: string;
-  regles_codage: string;
-}
 
 export default function App() {
   const { signOut } = useAuth();
-  const { data: profile } = useProfile();
+  const { data: profileRes } = useProfile();
+  console.log("Profile response:", profileRes);
+  const profile = profileRes?.body;
   const [input, setInput] = useState("");
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [suggestions, setSuggestions] = useState<{ code: string; libelle: string; justification: string; regles_codage: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,13 +17,9 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const res = await apiFetch("/codage-cim10/suggest", {
-        method: "POST",
-        body: JSON.stringify({ input }),
-      });
-      if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
-      const data = await res.json();
-      setSuggestions(data.suggestions ?? []);
+      const res = await apiClient.cim10.suggest({ body: { input } });
+      if (res.status !== 201) throw new Error(`Erreur serveur : ${res.status}`);
+      setSuggestions(res.body.suggestions);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur inconnue");
     } finally {
