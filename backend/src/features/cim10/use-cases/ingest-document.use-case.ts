@@ -1,7 +1,6 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import * as path from "path";
 import * as fs from "fs/promises";
-import { v4 as uuidv4 } from "uuid";
 import {
   CIM10_ENTRY_REPOSITORY,
   Cim10EntryRepositoryPort,
@@ -76,7 +75,7 @@ export class IngestDocumentUseCase {
       );
 
       const cim10Entry = new Cim10Entry({
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         content: parsedCim10Entry.content,
         metadata: {
           code: parsedCim10Entry.code,
