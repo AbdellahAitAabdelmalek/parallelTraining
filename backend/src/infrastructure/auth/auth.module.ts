@@ -1,5 +1,4 @@
 import { Module } from "@nestjs/common";
-import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { JwtStrategy } from "@/infrastructure/auth/jwt.strategy";
 import { JwtAuthGuard } from "@/infrastructure/auth/jwt-auth.guard";
@@ -11,9 +10,6 @@ import { USER_REPOSITORY } from "@/features/user/ports/user.repository.port";
 @Module({
   imports: [
     PassportModule,
-    JwtModule.register({
-      secret: process.env.SUPABASE_JWT_SECRET,
-    }),
   ],
   providers: [
     DrizzleProvider,
