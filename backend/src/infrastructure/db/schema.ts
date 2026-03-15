@@ -1,2 +1,2 @@
-export * from "./schemas/cim10-entry-schema";
-export * from "./schemas/user-schema";
+export * from "@/infrastructure/db/schemas/cim10-entry-schema";
+export * from "@/infrastructure/db/schemas/user-schema";

@@ -1,9 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { count, sql } from "drizzle-orm";
-import { Cim10EntryRepositoryPort } from "../../features/cim10/ports/cim10-entry.repository.port";
-import { Cim10Entry } from "../../features/cim10/entities/cim10-entry.entity";
-import { DRIZZLE_DB, DrizzleDb } from "./drizzle.provider";
-import { cim10Entries } from "./schemas/cim10-entry-schema";
+import { Cim10EntryRepositoryPort } from "@/features/cim10/ports/cim10-entry.repository.port";
+import { Cim10Entry } from "@/features/cim10/entities/cim10-entry.entity";
+import { DRIZZLE_DB, DrizzleDb } from "@/infrastructure/db/drizzle.provider";
+import { cim10Entries } from "@/infrastructure/db/schemas/cim10-entry-schema";
 
 @Injectable()
 export class DrizzleCim10EntryRepository implements Cim10EntryRepositoryPort {

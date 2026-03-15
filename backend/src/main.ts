@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
-import { AppModule } from "./app.module";
+import { AppModule } from "@/app.module";
 
 const REQUIRED_ENV_VARS = ["OPENAI_API_KEY", "DATABASE_URL", "SUPABASE_URL"];
 

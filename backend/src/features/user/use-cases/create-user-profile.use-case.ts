@@ -1,6 +1,6 @@
 import { ConflictException, Inject, Injectable } from "@nestjs/common";
-import { USER_REPOSITORY, UserRepositoryPort } from "../ports/user.repository.port";
-import { User } from "../entities/user.entity";
+import { USER_REPOSITORY, UserRepositoryPort } from "@/features/user/ports/user.repository.port";
+import { User } from "@/features/user/entities/user.entity";
 
 export interface CreateUserProfileInput {
   id: string;

@@ -1,4 +1,4 @@
-import { Cim10Entry } from "../entities/cim10-entry.entity";
+import { Cim10Entry } from "@/features/cim10/entities/cim10-entry.entity";
 
 export const CIM10_ENTRY_REPOSITORY = Symbol("CIM10_ENTRY_REPOSITORY");
 

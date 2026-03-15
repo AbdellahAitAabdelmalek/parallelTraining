@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
-import { JwtStrategy } from "./jwt.strategy";
-import { JwtAuthGuard } from "./jwt-auth.guard";
-import { AuthenticatedUserGuard } from "./authenticated-user.guard";
-import { DrizzleProvider } from "../db/drizzle.provider";
-import { DrizzleUserRepository } from "../db/drizzle-user.repository";
-import { USER_REPOSITORY } from "../../features/user/ports/user.repository.port";
+import { JwtStrategy } from "@/infrastructure/auth/jwt.strategy";
+import { JwtAuthGuard } from "@/infrastructure/auth/jwt-auth.guard";
+import { AuthenticatedUserGuard } from "@/infrastructure/auth/authenticated-user.guard";
+import { DrizzleProvider } from "@/infrastructure/db/drizzle.provider";
+import { DrizzleUserRepository } from "@/infrastructure/db/drizzle-user.repository";
+import { USER_REPOSITORY } from "@/features/user/ports/user.repository.port";
 
 @Module({
   imports: [

@@ -5,8 +5,8 @@ import {
   Logger,
 } from "@nestjs/common";
 import OpenAI, { APIError } from "openai";
-import { ChatServicePort } from "../../features/cim10/ports/chat.service.port";
-import { OPENAI_CLIENT } from "./openai.provider";
+import { ChatServicePort } from "@/features/cim10/ports/chat.service.port";
+import { OPENAI_CLIENT } from "@/infrastructure/openai/openai.provider";
 
 @Injectable()
 export class OpenAIChatService implements ChatServicePort {

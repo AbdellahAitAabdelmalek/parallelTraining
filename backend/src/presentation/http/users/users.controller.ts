@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { Request } from "express";
-import { JwtAuthGuard } from "../../../infrastructure/auth/jwt-auth.guard";
-import { AuthenticatedUserGuard } from "../../../infrastructure/auth/authenticated-user.guard";
-import { CreateUserProfileUseCase } from "../../../features/user/use-cases/create-user-profile.use-case";
-import { GetUserProfileUseCase } from "../../../features/user/use-cases/get-user-profile.use-case";
-import { CreateProfileDto } from "./dtos/create-profile.dto";
+import { JwtAuthGuard } from "@/infrastructure/auth/jwt-auth.guard";
+import { AuthenticatedUserGuard } from "@/infrastructure/auth/authenticated-user.guard";
+import { CreateUserProfileUseCase } from "@/features/user/use-cases/create-user-profile.use-case";
+import { GetUserProfileUseCase } from "@/features/user/use-cases/get-user-profile.use-case";
+import { CreateProfileDto } from "@/presentation/http/users/dtos/create-profile.dto";
 
 interface AuthenticatedRequest extends Request {
   user: { sub: string; email: string };

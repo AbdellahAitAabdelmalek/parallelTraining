@@ -1,9 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { eq } from "drizzle-orm";
-import { UserRepositoryPort } from "../../features/user/ports/user.repository.port";
-import { User } from "../../features/user/entities/user.entity";
-import { DRIZZLE_DB, DrizzleDb } from "./drizzle.provider";
-import { users } from "./schemas/user-schema";
+import { UserRepositoryPort } from "@/features/user/ports/user.repository.port";
+import { User } from "@/features/user/entities/user.entity";
+import { DRIZZLE_DB, DrizzleDb } from "@/infrastructure/db/drizzle.provider";
+import { users } from "@/infrastructure/db/schemas/user-schema";
 
 @Injectable()
 export class DrizzleUserRepository implements UserRepositoryPort {
