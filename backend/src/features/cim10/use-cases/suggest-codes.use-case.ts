@@ -7,15 +7,15 @@ import {
 import {
   CIM10_ENTRY_REPOSITORY,
   Cim10EntryRepositoryPort,
-} from "../../domain/cim10/ports/cim10-entry.repository.port";
+} from "../ports/cim10-entry.repository.port";
 import {
   EMBEDDING_SERVICE,
   EmbeddingServicePort,
-} from "../../domain/cim10/ports/embedding.service.port";
+} from "../ports/embedding.service.port";
 import {
   CHAT_SERVICE,
   ChatServicePort,
-} from "../../domain/cim10/ports/chat.service.port";
+} from "../ports/chat.service.port";
 
 export interface CodeSuggestion {
   code: string;

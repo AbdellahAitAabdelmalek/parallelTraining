@@ -1,8 +1,8 @@
 import { Body, Controller, Post, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "../../../infrastructure/auth/jwt-auth.guard";
 import { AuthenticatedUserGuard } from "../../../infrastructure/auth/authenticated-user.guard";
-import { IngestDocumentUseCase } from "../../../application/use-cases/ingest-document.use-case";
-import { SuggestCodesUseCase } from "../../../application/use-cases/suggest-codes.use-case";
+import { IngestDocumentUseCase } from "../../../features/cim10/use-cases/ingest-document.use-case";
+import { SuggestCodesUseCase } from "../../../features/cim10/use-cases/suggest-codes.use-case";
 import { SuggestDto } from "./dtos/suggest.dto";
 
 @UseGuards(JwtAuthGuard, AuthenticatedUserGuard)

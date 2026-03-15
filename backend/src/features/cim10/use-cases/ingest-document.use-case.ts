@@ -2,9 +2,9 @@ import { Inject, Injectable, Logger } from "@nestjs/common";
 import * as path from "path";
 import * as fs from "fs/promises";
 import { v4 as uuidv4 } from "uuid";
-import { CIM10_ENTRY_REPOSITORY, Cim10EntryRepositoryPort } from "../../domain/cim10/ports/cim10-entry.repository.port";
-import { EMBEDDING_SERVICE, EmbeddingServicePort } from "../../domain/cim10/ports/embedding.service.port";
-import { Cim10Entry } from "../../domain/cim10/entities/cim10-entry.entity";
+import { CIM10_ENTRY_REPOSITORY, Cim10EntryRepositoryPort } from "../ports/cim10-entry.repository.port";
+import { EMBEDDING_SERVICE, EmbeddingServicePort } from "../ports/embedding.service.port";
+import { Cim10Entry } from "../entities/cim10-entry.entity";
 
 interface ParsedCim10Entry {
   code: string;

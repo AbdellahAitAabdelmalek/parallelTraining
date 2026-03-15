@@ -5,7 +5,7 @@ import {
   Logger,
 } from "@nestjs/common";
 import OpenAI, { APIError } from "openai";
-import { ChatServicePort } from "../../domain/cim10/ports/chat.service.port";
+import { ChatServicePort } from "../../features/cim10/ports/chat.service.port";
 import { OPENAI_CLIENT } from "./openai.provider";
 
 @Injectable()

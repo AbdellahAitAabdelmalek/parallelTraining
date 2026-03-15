@@ -1,20 +1,22 @@
 # Architecture du backend
 
-Le backend suit les principes de l'**architecture hexagonale** (Ports & Adapters), qui isole la logique métier des détails techniques (base de données, API externes, framework HTTP).
+Le backend suit une approche **hybride** entre l'architecture hexagonale (Ports & Adapters) et un découpage **feature-first** : le cœur métier (entités + ports + use cases) est organisé par feature, tandis que l'infrastructure et la présentation restent des couches horizontales indépendantes.
 
 ## Principe
 
 ```
-  [ HTTP / NestJS ]
-         ↓
-  [ Use Cases ]  ←→  Ports (interfaces)  ←→  [ Adapters ]
-         ↓                                      ↙      ↘
-  [ Entities ]                          [ Drizzle ]  [ OpenAI ]
+  [ presentation/http ]        ← livraison HTTP (controllers, DTOs)
+          ↓
+  [ features/*/use-cases ]     ← logique métier, orchestration
+          ↓
+  [ features/*/ports ]         ← interfaces (contrats abstraits)
+          ↑
+  [ infrastructure/ ]          ← implémentations concrètes (DB, OpenAI, Auth)
 ```
 
-Le **domaine** (entités + ports) ne dépend de rien d'externe.
-Les **adapters** (infrastructure) implémentent les ports.
-Les **use cases** (application) orchestrent la logique via les ports.
+Le **domaine** (entités + ports + use cases) ne dépend de rien d'externe.
+L'**infrastructure** implémente les ports — on peut changer d'ORM sans toucher aux features.
+La **présentation** ne connaît que les use cases et les guards.
 
 ---
 
@@ -22,23 +24,27 @@ Les **use cases** (application) orchestrent la logique via les ports.
 
 ```
 src/
-├── domain/                         ← cœur métier, aucune dépendance externe
-│   ├── entities/                   ← objets métier (ex. Cim10Entry)
-│   └── ports/                      ← interfaces de persistance et services
+├── features/
+│   └── user/                        ← exemple de feature (même structure pour cim10, etc.)
+│       ├── entities/                ← objets métier purs
+│       ├── ports/                   ← interfaces (contrats abstraits)
+│       └── use-cases/               ← logique métier, orchestration
 │
-├── application/                    ← cas d'usage, orchestre le domaine
-│   └── use-cases/
-│       ├── ingest-document.use-case.ts  ← indexer le PDF CoCoA
-│       └── suggest-codes.use-case.ts    ← suggérer des codes CIM-10
-│
-├── infrastructure/                 ← adapters techniques
-│   ├── db/                         ← Drizzle ORM + PostgreSQL
-│   └── openai/                     ← appels à l'API OpenAI
+├── infrastructure/                  ← adapters techniques (détails d'implémentation)
+│   ├── auth/                        ← JWT, guards
+│   ├── db/                          ← Drizzle ORM + PostgreSQL
+│   └── openai/                      ← appels à l'API OpenAI
 │
 ├── presentation/
-│   └── http/
-│       ├── rag.controller.ts       ← routes REST
-│       └── rag.module.ts           ← wiring NestJS (DI)
+│   └── http/                        ← controllers, modules NestJS, DTOs
 │
-└── migrations/                     ← fichiers SQL générés par drizzle-kit
+└── migrations/                      ← fichiers SQL générés par drizzle-kit
 ```
+
+---
+
+## Pourquoi ce découpage ?
+
+- **Ajouter une feature** → créer un dossier `features/nouvelle-feature/` autonome
+- **Changer d'ORM** → modifier uniquement `infrastructure/db/`, sans toucher aux features
+- **Changer de framework HTTP** → modifier uniquement `presentation/`, sans toucher aux features

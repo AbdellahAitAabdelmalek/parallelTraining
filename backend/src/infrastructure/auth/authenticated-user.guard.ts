@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Request } from "express";
-import { UserRepositoryPort, USER_REPOSITORY } from "../../domain/user/ports/user.repository.port";
+import { UserRepositoryPort, USER_REPOSITORY } from "../../features/user/ports/user.repository.port";
 
 @Injectable()
 export class AuthenticatedUserGuard implements CanActivate {

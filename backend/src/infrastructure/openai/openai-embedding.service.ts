@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import OpenAI from "openai";
-import { EmbeddingServicePort } from "../../domain/cim10/ports/embedding.service.port";
+import { EmbeddingServicePort } from "../../features/cim10/ports/embedding.service.port";
 import { OPENAI_CLIENT } from "./openai.provider";
 
 @Injectable()
