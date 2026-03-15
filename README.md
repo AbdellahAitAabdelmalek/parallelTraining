@@ -38,18 +38,28 @@ Le document de référence utilisé est le **CoCoA** (Compendium de Codage), un 
 ```bash
 # 1. Variables d'environnement
 cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+#  Remplissez backend/.env avec votre DATABASE_URL et OPENAI_API_KEY
+#  Remplissez frontend/.env avec votre VITE_API_URL
 
-# 2. Base de données
+# 2. Build du contract partagé (types et API)
+cd contract
+npm install
+npm run build
+
+# 3. Base de données local (PostgreSQL + pgvector) via Docker (optionnel si vous utilisez une base distante)cd backend
 cd backend
 docker compose up -d
 npm install
 npm run db:migrate
 
-# 3. Backend
+# 4. Backend
+cd backend
+npm install
 npm run start:dev
 
-# 4. Frontend (dans un autre terminal)
-cd ../frontend
+# 5. Frontend (dans un autre terminal)
+cd frontend
 npm install
 npm run dev
 ```
@@ -60,12 +70,9 @@ L'API est disponible sur `http://localhost:3000`, le frontend sur `http://localh
 
 ```
 parallelTraining/
-├── docker/initdb/          ← scripts SQL d'initialisation PostgreSQL
+├── contract/               ← types et contrats d'API partagés (ts-rest + zod)
 ├── backend/                ← API NestJS (voir ARCHITECTURE.md)
-├── frontend/               ← Interface React
-├── CoCoA.pdf               ← document source à indexer
-├── docker-compose.yml
-└── .env.example
+└── frontend/               ← Interface React
 ```
 
 ## Tests
