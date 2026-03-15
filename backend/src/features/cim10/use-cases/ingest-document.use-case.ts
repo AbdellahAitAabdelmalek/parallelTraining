@@ -2,8 +2,14 @@ import { Inject, Injectable, Logger } from "@nestjs/common";
 import * as path from "path";
 import * as fs from "fs/promises";
 import { v4 as uuidv4 } from "uuid";
-import { CIM10_ENTRY_REPOSITORY, Cim10EntryRepositoryPort } from "@/features/cim10/ports/cim10-entry.repository.port";
-import { EMBEDDING_SERVICE, EmbeddingServicePort } from "@/features/cim10/ports/embedding.service.port";
+import {
+  CIM10_ENTRY_REPOSITORY,
+  Cim10EntryRepositoryPort,
+} from "@/features/cim10/ports/cim10-entry.repository.port";
+import {
+  EMBEDDING_SERVICE,
+  EmbeddingServicePort,
+} from "@/features/cim10/ports/embedding.service.port";
 import { Cim10Entry } from "@/features/cim10/entities/cim10-entry.entity";
 
 interface ParsedCim10Entry {
@@ -40,7 +46,9 @@ export class IngestDocumentUseCase {
   async execute(): Promise<{ message: string; count?: number }> {
     const existing = await this.cim10EntryRepository.count();
     if (existing >= this.FULL_INGEST_THRESHOLD) {
-      this.logger.log(`Skipping ingestion — ${existing} CIM-10 entries already in DB`);
+      this.logger.log(
+        `Skipping ingestion — ${existing} CIM-10 entries already in DB`,
+      );
       return { message: "Already ingested", count: existing };
     }
     if (existing > 0) {
@@ -63,12 +71,17 @@ export class IngestDocumentUseCase {
 
     let saved = 0;
     for (const parsedCim10Entry of cim10Entries) {
-      const embedding = await this.embeddingService.embed(parsedCim10Entry.content);
+      const embedding = await this.embeddingService.embed(
+        parsedCim10Entry.content,
+      );
 
       const cim10Entry = new Cim10Entry({
         id: uuidv4(),
         content: parsedCim10Entry.content,
-        metadata: { code: parsedCim10Entry.code, libelle: parsedCim10Entry.libelle },
+        metadata: {
+          code: parsedCim10Entry.code,
+          libelle: parsedCim10Entry.libelle,
+        },
         embedding,
       });
 

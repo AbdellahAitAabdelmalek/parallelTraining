@@ -18,7 +18,9 @@ export default function SignupPage() {
     setLoading(true);
     setError(null);
 
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
+      { email, password },
+    );
 
     if (signUpError) {
       setError(signUpError.message);
@@ -28,15 +30,21 @@ export default function SignupPage() {
 
     const token = signUpData.session?.access_token;
     if (!token) {
-      setError("Vérifie ton email pour confirmer ton compte avant de continuer.");
+      setError(
+        "Vérifie ton email pour confirmer ton compte avant de continuer.",
+      );
       setLoading(false);
       return;
     }
 
-    const res = await apiFetch("/users/profile", {
-      method: "POST",
-      body: JSON.stringify({ firstName, lastName, dateOfBirth }),
-    }, token);
+    const res = await apiFetch(
+      "/users/profile",
+      {
+        method: "POST",
+        body: JSON.stringify({ firstName, lastName, dateOfBirth }),
+      },
+      token,
+    );
 
     if (!res.ok) {
       const data = await res.json();
@@ -56,7 +64,9 @@ export default function SignupPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Prénom
+              </label>
               <input
                 type="text"
                 required
@@ -66,7 +76,9 @@ export default function SignupPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Nom
+              </label>
               <input
                 type="text"
                 required
@@ -78,7 +90,9 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Date de naissance</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Date de naissance
+            </label>
             <input
               type="date"
               required
@@ -89,7 +103,9 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <input
               type="email"
               required
@@ -100,7 +116,9 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mot de passe
+            </label>
             <input
               type="password"
               required

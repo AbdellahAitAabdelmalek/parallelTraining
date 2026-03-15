@@ -19,7 +19,13 @@ export class Cim10Entry {
   public readonly embedding: number[] | null;
   public readonly createdAt: Date;
 
-  constructor({ id, content, metadata, embedding, createdAt }: Cim10EntryProps) {
+  constructor({
+    id,
+    content,
+    metadata,
+    embedding,
+    createdAt,
+  }: Cim10EntryProps) {
     this.id = id;
     this.content = content;
     this.metadata = metadata;

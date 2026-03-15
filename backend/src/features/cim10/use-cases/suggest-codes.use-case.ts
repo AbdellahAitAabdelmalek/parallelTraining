@@ -46,7 +46,9 @@ export class SuggestCodesUseCase {
       5,
     );
 
-    const context = similarCim10Entries.map((cim10Entry) => cim10Entry.content).join("\n\n---\n\n");
+    const context = similarCim10Entries
+      .map((cim10Entry) => cim10Entry.content)
+      .join("\n\n---\n\n");
     const prompt = this.buildPrompt(input, context);
 
     let responseRaw: string;

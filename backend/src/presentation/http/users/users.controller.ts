@@ -19,7 +19,10 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Post("profile")
-  createProfile(@Req() req: AuthenticatedRequest, @Body() dto: CreateProfileDto) {
+  createProfile(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: CreateProfileDto,
+  ) {
     return this.createUserProfileUseCase.execute({
       id: req.user.sub,
       email: req.user.email,

@@ -15,7 +15,14 @@ export class User {
   public readonly dateOfBirth: Date;
   public readonly createdAt: Date;
 
-  constructor({ id, email, firstName, lastName, dateOfBirth, createdAt }: UserProps) {
+  constructor({
+    id,
+    email,
+    firstName,
+    lastName,
+    dateOfBirth,
+    createdAt,
+  }: UserProps) {
     this.id = id;
     this.email = email;
     this.firstName = firstName;
