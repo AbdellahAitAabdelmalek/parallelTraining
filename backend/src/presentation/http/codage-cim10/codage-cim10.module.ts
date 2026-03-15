@@ -10,8 +10,10 @@ import { OpenAIProvider } from "../../../infrastructure/openai/openai.provider";
 import { CIM10_ENTRY_REPOSITORY } from "../../../domain/cim10/ports/cim10-entry.repository.port";
 import { EMBEDDING_SERVICE } from "../../../domain/cim10/ports/embedding.service.port";
 import { CHAT_SERVICE } from "../../../domain/cim10/ports/chat.service.port";
+import { AuthModule } from "../../../infrastructure/auth/auth.module";
 
 @Module({
+  imports: [AuthModule],
   controllers: [CodageCim10Controller],
   providers: [
     DrizzleProvider,

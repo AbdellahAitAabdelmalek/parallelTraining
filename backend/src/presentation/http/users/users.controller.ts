@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { Request } from "express";
 import { JwtAuthGuard } from "../../../infrastructure/auth/jwt-auth.guard";
+import { AuthenticatedUserGuard } from "../../../infrastructure/auth/authenticated-user.guard";
 import { CreateUserProfileUseCase } from "../../../application/use-cases/create-user-profile.use-case";
 import { GetUserProfileUseCase } from "../../../application/use-cases/get-user-profile.use-case";
 import { CreateProfileDto } from "./dtos/create-profile.dto";
@@ -9,7 +10,6 @@ interface AuthenticatedRequest extends Request {
   user: { sub: string; email: string };
 }
 
-@UseGuards(JwtAuthGuard)
 @Controller("users")
 export class UsersController {
   constructor(
@@ -17,6 +17,7 @@ export class UsersController {
     private readonly getUserProfileUseCase: GetUserProfileUseCase,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post("profile")
   createProfile(@Req() req: AuthenticatedRequest, @Body() dto: CreateProfileDto) {
     return this.createUserProfileUseCase.execute({
@@ -28,6 +29,7 @@ export class UsersController {
     });
   }
 
+  @UseGuards(JwtAuthGuard, AuthenticatedUserGuard)
   @Get("profile")
   getProfile(@Req() req: AuthenticatedRequest) {
     return this.getUserProfileUseCase.execute(req.user.sub);
