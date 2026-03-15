@@ -1,4 +1,4 @@
-# RAG CIM-10 — Suggestion de codes médicaux
+# Parallel CIM-10 — Suggestion de codes médicaux
 
 ## Objectif
 
@@ -70,7 +70,7 @@ parallelTraining/
 
 ## Endpoints
 
-| Méthode | Route          | Description                                         |
-| ------- | -------------- | --------------------------------------------------- |
-| POST    | `/rag/ingest`  | Indexe le document CoCoA                            |
-| POST    | `/rag/suggest` | Retourne des suggestions CIM-10 pour un texte donné |
+| Méthode | Route                   | Description                                         |
+| ------- | ----------------------- | --------------------------------------------------- |
+| POST    | `/codage-cim10/ingest`  | Indexe le document CoCoA                            |
+| POST    | `/codage-cim10/suggest` | Retourne des suggestions CIM-10 pour un texte donné |
