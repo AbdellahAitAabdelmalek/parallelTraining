@@ -3,7 +3,7 @@ import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
 import { AppModule } from "./app.module";
 
-const REQUIRED_ENV_VARS = ["OPENAI_API_KEY", "DATABASE_URL"];
+const REQUIRED_ENV_VARS = ["OPENAI_API_KEY", "DATABASE_URL", "SUPABASE_URL"];
 
 for (const key of REQUIRED_ENV_VARS) {
   if (!process.env[key]) {
