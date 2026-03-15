@@ -20,7 +20,7 @@ const vector = (name: string, dimensions: number) =>
     },
   })(name);
 
-export const cim10Entries = pgTable("cim10_entries", {
+export const cim10Entries = pgTable("chunks", {
   id: uuid("id").primaryKey().defaultRandom(),
   content: text("content").notNull(),
   metadata: jsonb("metadata").notNull().$type<Record<string, unknown>>(),

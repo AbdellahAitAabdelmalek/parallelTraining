@@ -19,12 +19,12 @@ export class DrizzleCim10EntryRepository implements Cim10EntryRepositoryPort {
   }
 
   async truncate(): Promise<void> {
-    await this.db.execute(sql`TRUNCATE TABLE cim10_entries`);
+    await this.db.execute(sql`TRUNCATE TABLE chunks`);
   }
 
   async count(): Promise<number> {
     const result = await this.db.execute<{ count: string }>(
-      sql`SELECT COUNT(*)::int as count FROM cim10_entries`,
+      sql`SELECT COUNT(*)::int as count FROM chunks`,
     );
     return Number(result.rows[0].count);
   }
@@ -33,7 +33,7 @@ export class DrizzleCim10EntryRepository implements Cim10EntryRepositoryPort {
     const vectorStr = `[${embedding.join(",")}]`;
     const rows = await this.db.execute<Cim10EntryRow>(
       sql`SELECT id, content, metadata, embedding::text, created_at
-          FROM cim10_entries
+          FROM chunks
           ORDER BY embedding <=> ${vectorStr}::vector
           LIMIT ${limit}`,
     );
