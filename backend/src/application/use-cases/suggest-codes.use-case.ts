@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
 import {
   CHUNK_REPOSITORY,
   ChunkRepositoryPort,
@@ -39,10 +39,20 @@ export class SuggestCodesUseCase {
 
     const context = similarChunks.map((c) => c.content).join("\n\n---\n\n");
     const prompt = this.buildPrompt(input, context);
-    const responseRaw = await this.chatService.complete(prompt);
 
-    const parsed = JSON.parse(responseRaw) as { suggestions: CodeSuggestion[] };
-    return { suggestions: parsed.suggestions ?? [] };
+    let responseRaw: string;
+    try {
+      responseRaw = await this.chatService.complete(prompt);
+    } catch {
+      throw new InternalServerErrorException("Unable to get suggestions at this time");
+    }
+
+    try {
+      const parsed = JSON.parse(responseRaw) as { suggestions: CodeSuggestion[] };
+      return { suggestions: parsed.suggestions ?? [] };
+    } catch {
+      throw new InternalServerErrorException("Invalid response format from AI model");
+    }
   }
 
   private buildPrompt(input: string, context: string): string {
