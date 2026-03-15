@@ -18,15 +18,26 @@ interface ParsedChunk {
 export class IngestDocumentUseCase {
   private readonly logger = new Logger(IngestDocumentUseCase.name);
 
+  private readonly FULL_INGEST_THRESHOLD = 1000; // safety check to avoid duplicate ingestion during development
+  private readonly EMBED_DELAY_MS = 700; // stay under 100 RPM
+  private readonly MIN_CHUNK_LENGTH = 10;
+  private readonly LOG_INTERVAL = 50;
+  private readonly PDF_PATH = path.resolve(
+    __dirname,
+    "../../../../assets/CoCoA.pdf",
+  );
+
+  // CIM-10 code: one letter followed by 2 digits (optionally with sub-codes like R06.0)
+  private readonly CIM10_CODE_PATTERN = /^([A-Z]\d{2}(?:\.\d+)?)\s+(.+)$/m;
+  // Lookahead to split on lines that start with a CIM-10 code
+  private readonly CIM10_BLOCK_PATTERN = /(?=^[A-Z]\d{2}(?:\.\d+)?\s)/gm;
+
   constructor(
     @Inject(CHUNK_REPOSITORY)
     private readonly chunkRepository: ChunkRepositoryPort,
     @Inject(EMBEDDING_SERVICE)
     private readonly embeddingService: EmbeddingServicePort,
   ) {}
-
-  private readonly FULL_INGEST_THRESHOLD = 1000; // safety check to avoid duplicate ingestion during development
-  private readonly EMBED_DELAY_MS = 700; // stay under 100 RPM
 
   async execute(): Promise<{ message: string; count?: number }> {
     const existing = await this.chunkRepository.count();
@@ -41,13 +52,11 @@ export class IngestDocumentUseCase {
       await this.chunkRepository.truncate();
     }
 
-    const pdfPath = path.resolve(__dirname, "../../../../assets/CoCoA.pdf");
-
-    this.logger.log(`Parsing PDF: ${pdfPath}`);
+    this.logger.log(`Parsing PDF: ${this.PDF_PATH}`);
 
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { PDFParse } = require("pdf-parse");
-    const buffer = fs.readFileSync(pdfPath);
+    const buffer = fs.readFileSync(this.PDF_PATH);
     const parser = new PDFParse({ data: buffer });
     const data = await parser.getText();
     const text: string = data.text;
@@ -68,7 +77,7 @@ export class IngestDocumentUseCase {
       await this.chunkRepository.save(chunk);
       saved++;
       await new Promise((r) => setTimeout(r, this.EMBED_DELAY_MS));
-      if (saved % 50 === 0) {
+      if (saved % this.LOG_INTERVAL === 0) {
         this.logger.log(`Saved ${saved}/${chunks.length} chunks`);
       }
     }
@@ -78,24 +87,21 @@ export class IngestDocumentUseCase {
   }
 
   private splitIntoChunks(text: string): ParsedChunk[] {
-    // CIM-10 codes: one letter followed by 2 digits (optionally with sub-codes like R06.0)
-    const codePattern = /^([A-Z]\d{2}(?:\.\d+)?)\s+(.+)$/m;
-    // Split on lines that start with a CIM-10 code
-    const blockPattern = /(?=^[A-Z]\d{2}(?:\.\d+)?\s)/m;
-
-    const blocks = text.split(new RegExp(blockPattern, "gm")).filter(Boolean);
+    const blocks = text
+      .split(this.CIM10_BLOCK_PATTERN)
+      .filter(Boolean);
 
     const parsed: ParsedChunk[] = [];
     for (const block of blocks) {
       const firstLine = block.split("\n")[0];
-      const match = firstLine.match(codePattern);
+      const match = firstLine.match(this.CIM10_CODE_PATTERN);
       if (!match) continue;
 
       const code = match[1].trim();
       const libelle = match[2].trim();
       const content = block.trim();
 
-      if (content.length < 10) continue;
+      if (content.length < this.MIN_CHUNK_LENGTH) continue;
 
       parsed.push({ code, libelle, content });
     }
