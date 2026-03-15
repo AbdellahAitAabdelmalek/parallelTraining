@@ -54,7 +54,6 @@ export class IngestDocumentUseCase {
 
     this.logger.log(`Parsing PDF: ${this.PDF_PATH}`);
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { PDFParse } = require("pdf-parse");
     const buffer = await fs.readFile(this.PDF_PATH);
     const parser = new PDFParse({ data: buffer });
@@ -86,9 +85,7 @@ export class IngestDocumentUseCase {
   }
 
   private splitIntoChunks(text: string): ParsedChunk[] {
-    const blocks = text
-      .split(this.CIM10_BLOCK_PATTERN)
-      .filter(Boolean);
+    const blocks = text.split(this.CIM10_BLOCK_PATTERN).filter(Boolean);
 
     const parsed: ParsedChunk[] = [];
     for (const block of blocks) {

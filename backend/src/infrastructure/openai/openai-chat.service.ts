@@ -1,4 +1,9 @@
-import { Inject, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from "@nestjs/common";
 import OpenAI, { APIError } from "openai";
 import { ChatServicePort } from "../../domain/ports/chat.service.port";
 import { OPENAI_CLIENT } from "./openai.provider";
@@ -20,7 +25,9 @@ export class OpenAIChatService implements ChatServicePort {
       return completion.choices[0].message.content ?? "{}";
     } catch (err) {
       if (err instanceof APIError) {
-        this.logger.error(`AI API error — status=${err.status} message=${err.message}`);
+        this.logger.error(
+          `AI API error — status=${err.status} message=${err.message}`,
+        );
       } else {
         this.logger.error("Unexpected error during AI completion", err);
       }

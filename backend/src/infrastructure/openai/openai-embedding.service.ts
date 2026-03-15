@@ -5,9 +5,7 @@ import { OPENAI_CLIENT } from "./openai.provider";
 
 @Injectable()
 export class OpenAIEmbeddingService implements EmbeddingServicePort {
-  constructor(
-    @Inject(OPENAI_CLIENT) private readonly client: OpenAI,
-  ) {}
+  constructor(@Inject(OPENAI_CLIENT) private readonly client: OpenAI) {}
 
   // text-embedding-3-small: 8192 tokens max
   // French medical text ~3 chars/token → safe limit at 16 000 chars (~5 300 tokens)
