@@ -1,9 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { sql } from "drizzle-orm";
+import { count, sql } from "drizzle-orm";
 import { Cim10EntryRepositoryPort } from "../../domain/cim10/ports/cim10-entry.repository.port";
 import { Cim10Entry } from "../../domain/cim10/entities/cim10-entry.entity";
 import { DRIZZLE_DB, DrizzleDb } from "./drizzle.provider";
-import { cim10Entries, Cim10EntryRow } from "./schema";
+import { cim10Entries } from "./schemas/cim10-entry-schema";
 
 @Injectable()
 export class DrizzleCim10EntryRepository implements Cim10EntryRepositoryPort {
@@ -19,36 +19,29 @@ export class DrizzleCim10EntryRepository implements Cim10EntryRepositoryPort {
   }
 
   async truncate(): Promise<void> {
-    await this.db.execute(sql`TRUNCATE TABLE chunks`);
+    await this.db.delete(cim10Entries);
   }
 
   async count(): Promise<number> {
-    const result = await this.db.execute<{ count: string }>(
-      sql`SELECT COUNT(*)::int as count FROM chunks`,
-    );
-    return Number(result.rows[0].count);
+    const result = await this.db.select({ count: count() }).from(cim10Entries);
+    return result[0].count;
   }
 
   async findSimilar(embedding: number[], limit: number): Promise<Cim10Entry[]> {
     const vectorStr = `[${embedding.join(",")}]`;
-    const rows = await this.db.execute<Cim10EntryRow>(
-      sql`SELECT id, content, metadata, embedding::text, created_at
-          FROM chunks
-          ORDER BY embedding <=> ${vectorStr}::vector
-          LIMIT ${limit}`,
-    );
-    return rows.rows.map(
+    const rows = await this.db
+      .select()
+      .from(cim10Entries)
+      .orderBy(sql`embedding <=> ${vectorStr}::vector`)
+      .limit(limit);
+
+    return rows.map(
       (row) =>
         new Cim10Entry({
           id: row.id,
           content: row.content,
           metadata: row.metadata as Record<string, unknown>,
-          embedding: row.embedding
-            ? (row.embedding as unknown as string)
-                .slice(1, -1)
-                .split(",")
-                .map(Number)
-            : null,
+          embedding: row.embedding,
           createdAt: row.createdAt,
         }),
     );

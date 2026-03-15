@@ -1,9 +1,13 @@
 import { Provider } from "@nestjs/common";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import * as schema from "./schema";
+import { cim10Entries } from "./schemas/cim10-entry-schema";
 
 export const DRIZZLE_DB = Symbol("DRIZZLE_DB");
+
+const schema = {
+  cim10Entries,
+};
 
 export type DrizzleDb = ReturnType<typeof drizzle<typeof schema>>;
 
