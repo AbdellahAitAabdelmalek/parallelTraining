@@ -25,6 +25,22 @@ Le document de référence utilisé est le **CoCoA** (Compendium de Codage), un 
 | Embeddings      | OpenAI API (`text-embedding-3-small`, 1536 dimensions) |
 | Infrastructure  | Docker Compose                                         |
 
+## Déploiement
+
+L'application est déployée sur **Railway** avec **Supabase** comme base de données managée.
+
+| Service         | Plateforme                                          |
+| --------------- | --------------------------------------------------- |
+| Backend (API)   | [Railway](https://railway.app)                      |
+| Frontend        | [Railway](https://railway.app)                      |
+| Base de données | [Supabase](https://supabase.com) (PostgreSQL + pgvector) |
+
+### Environnement de test
+
+L'application est accessible à l'adresse suivante :
+
+- **Frontend** : https://parallel-frontend.up.railway.app/
+
 ## Démarrage rapide
 
 ### Prérequis
