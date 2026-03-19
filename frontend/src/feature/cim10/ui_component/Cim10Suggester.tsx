@@ -1,25 +1,9 @@
 import { useState } from "react";
-import { apiClient } from "@/lib/api-client";
+import { useCim10Suggest } from "@/feature/cim10/data_integration/useCim10Suggest";
 
 export default function Cim10Suggester() {
   const [input, setInput] = useState("");
-  const [suggestions, setSuggestions] = useState<{ code: string; libelle: string; justification: string; regles_codage: string }[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSuggest = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await apiClient.cim10.suggest({ body: { input } });
-      if (res.status !== 201) throw new Error(`Erreur serveur : ${res.status}`);
-      setSuggestions(res.body.suggestions);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Erreur inconnue");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { suggestions, loading, error, suggest } = useCim10Suggest();
 
   return (
     <div className="space-y-6">
@@ -32,7 +16,7 @@ export default function Cim10Suggester() {
           onChange={(e) => setInput(e.target.value)}
         />
         <button
-          onClick={handleSuggest}
+          onClick={() => suggest(input)}
           disabled={loading || !input.trim()}
           className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-medium py-2 px-4 rounded-lg transition-colors"
         >

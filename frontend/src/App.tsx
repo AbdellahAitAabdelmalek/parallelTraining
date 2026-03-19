@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { useProfile } from "@/hooks/useProfile";
-import Cim10Suggester from "@/components/Cim10Suggester";
-import Header from "@/components/Header";
+import { useProfile } from "@/feature/user/data_integration/useProfile";
+import Cim10Suggester from "@/feature/cim10/ui_component/Cim10Suggester";
+import Header from "@/feature/user/ui_component/Header";
 
 export default function App() {
   const { signOut } = useAuth();
